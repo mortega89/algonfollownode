@@ -1,0 +1,199 @@
+# Default values for conduit.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+conduit:
+  config:
+# Log verbosity: PANIC, FATAL, ERROR, WARN, INFO, DEBUG, TRACE
+    log-level: INFO
+
+    # If no log file is provided logs are written to stdout.
+    #log-file:
+
+    # Number of retries to perform after a pipeline plugin error.
+    # Set to 0 to retry forever.
+    retry-count: 100
+
+    # Time duration to wait between retry attempts.
+    retry-delay: "20s"
+
+    # Optional filepath to use for pidfile.
+    #pid-filepath: /path/to/pidfile
+
+    # Whether or not to print the conduit banner on startup.
+    hide-banner: false
+
+    # When the address is not empty information is available on '/health'
+    api:
+        addr: ":8981"
+
+    # When enabled prometheus metrics are available on '/metrics'
+    metrics:
+        mode: OFF
+        addr: ":9999"
+        prefix: "conduit"
+
+    # The importer is typically an algod follower node.
+    importer:
+        name: algod
+        config:
+            # The mode of operation, either "archival" or "follower".
+            # * follower mode allows you to use a lightweight non-archival node as the
+            #   data source. In addition, it will provide ledger state delta objects to
+            #   the processors and exporter.
+            # * archival mode allows you to start processing on any round but does not
+            #   contain the ledger state delta objects required for the postgres writer.
+            mode: "follower"
+
+            # Algod API address.
+            netaddr: "http://ALGORAND_ADDRESS:8080"
+
+            # Algod API token. Found in the algod.token file.
+            token: "TOKEN FROM ALGORAND (IT IS ON A SECRET OR CONFIGMAP)"
+
+            # Algod catchpoint catchup arguments
+            catchup-config:
+                # Algod Admin API Token. Used for running fast catchup during startup
+                # if the node needs to be initialized. Found in algod.admin.token file.
+                admin-token: "ADMIN TOKEN FROM ALGORAND(IT IS ON A SECRET OR CONFIGMAP)"
+
+
+    # Zero or more processors may be defined to manipulate what data
+    # reaches the exporter.
+    processors:
+
+    # An exporter is defined to do something with the data.
+    exporter:
+        name: file_writer
+        config:
+            # BlocksDir is the path to a directory where block data should be stored.
+            # The directory is created if it doesn't exist. If no directory is provided
+            # blocks are written to the Conduit data directory.
+            #block-dir: "/path/to/block/files"
+
+            # FilenamePattern is the format used to write block files. It uses go
+            # string formatting and should accept one number for the round.
+            # To specify JSON encoding, add a '.json' extension to the filename.
+            # To specify MessagePack encoding, add a '.msgp' extension to the filename.
+            # If the file has a '.gz' extension, blocks will be gzipped regardless of encoding.
+            # Default: "%[1]d_block.msgp.gz"
+            filename-pattern: "%[1]d_block.msgp.gz"
+            block-dir: "/tmp/conduit-blocks/"
+
+            # DropCertificate is used to remove the vote certificate from the block data before writing files.
+            drop-certificate: true
+
+
+replicaCount: 1
+
+image:
+  repository: algorand/conduit
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "1.7.0"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# service:
+#   type: ClusterIP
+#   port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # hosts:
+  #   - host: chart-example.local
+  #     paths:
+  #       - path: /
+  #         pathType: ImplementationSpecific
+  # tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# livenessProbe:
+#   httpGet:
+#     path: /
+#     port: http
+# readinessProbe:
+#   httpGet:
+#     path: /
+#     port: http
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+#volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+volumes:
+  - name: config-volume
+    configMap:
+      name: conduit-configmap
+  - name: data-volume
+    emptyDir: {}
+
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts:
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+  - name: config-volume
+    mountPath: /conduit_def.yml
+    subPath: conduit_def.yml
+  - mountPath: /data/
+    name: data-volume
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

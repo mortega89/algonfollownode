@@ -1,0 +1,7 @@
+{{- $fullName := include "conduit.fullname" . -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $fullName }}-configmap
+data:
+  conduit_def.yml: {{ .Values.conduit.config | toYaml | quote }} 

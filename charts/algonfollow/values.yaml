@@ -1,0 +1,86 @@
+# Default values for algon.
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: false
+  ingressClassName: nginx
+  annotations: {}
+  hosts:
+    - host: algon.local
+      paths:
+        - "/"
+  tls: []
+
+algorand:
+  network: testnet
+  config:
+    algod:
+      Version: 34
+      BaseLoggerDebugLevel: 3
+      DNSSecurityFlags: 0
+      LogArchiveMaxAge: "1h"
+      LogArchiveName: "node.archive.log"
+      LogSizeLimit: 0
+      NodeExporterListenAddress: ":9100"
+      NodeExporterPath: "./node_exporter"
+      EnableFollowMode: true    
+      CatchupParallelBlocks: 64
+      MaxAcctLookback: 64
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  repository: algotestdumb
+  # Defaults to Chart appVersion
+  tag: 2
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+  # privileged: false
+  # readOnlyRootFilesystem: true
+  # allowPrivilegeEscalation: false
+  # runAsUser: 10001
+  # runAsGroup: 10001
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # seccompProfile:
+  #   type: RuntimeDefault
+
+resources:
+  limits:
+    cpu: 1
+    memory: 1Gi
+  requests:
+    cpu: 1
+    memory: 1Gi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+storage:
+  size: 50Gi
