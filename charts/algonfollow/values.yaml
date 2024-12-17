@@ -38,7 +38,7 @@ fullnameOverride: ""
 image:
   repository: algotestdumb
   # Defaults to Chart appVersion
-  tag: 2
+  tag: 1
   pullPolicy: IfNotPresent
 
 serviceAccount:
