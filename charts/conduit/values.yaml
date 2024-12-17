@@ -77,7 +77,7 @@ conduit:
             # If the file has a '.gz' extension, blocks will be gzipped regardless of encoding.
             # Default: "%[1]d_block.msgp.gz"
             filename-pattern: "%[1]d_block.msgp.gz"
-            block-dir: "/tmp/conduit-blocks/"
+            block-dir: "/tmp/conduit-blocks1/"
 
             # DropCertificate is used to remove the vote certificate from the block data before writing files.
             drop-certificate: true
