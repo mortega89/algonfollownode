@@ -14,7 +14,7 @@ RUN apt update && \
     mv ./kubectl /usr/bin/kubectl
 
 # Algorand node
-# dio
+#
 WORKDIR /algorand
 SHELL ["/bin/bash", "-c"]
 RUN curl -L https://raw.githubusercontent.com/algorand/go-algorand/rel/stable/cmd/updater/update.sh --output ./update.sh && \
