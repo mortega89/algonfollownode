@@ -49,13 +49,13 @@ conduit:
             netaddr: "http://ALGORAND_ADDRESS:8080"
 
             # Algod API token. Found in the algod.token file.
-            token: "TOKEN FROM ALGORAND (IT IS ON A SECRET OR CONFIGMAP)"
+            # token: "TOKEN FROM ALGORAND (IT IS ON A SECRET OR CONFIGMAP)"
 
-            # Algod catchpoint catchup arguments
-            catchup-config:
-                # Algod Admin API Token. Used for running fast catchup during startup
-                # if the node needs to be initialized. Found in algod.admin.token file.
-                admin-token: "ADMIN TOKEN FROM ALGORAND(IT IS ON A SECRET OR CONFIGMAP)"
+            # # Algod catchpoint catchup arguments
+            # catchup-config:
+            #     # Algod Admin API Token. Used for running fast catchup during startup
+            #     # if the node needs to be initialized. Found in algod.admin.token file.
+            #     admin-token: "ADMIN TOKEN FROM ALGORAND(IT IS ON A SECRET OR CONFIGMAP)"
 
 
     # Zero or more processors may be defined to manipulate what data

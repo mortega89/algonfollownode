@@ -25,8 +25,19 @@ spec:
     spec:
       initContainers:
         - name: add-conf
-          image: alpine:3.6
-          command: ["sh", "-c", "cp /conduit_def.yml /data/conduit.yml"]
+          image: bitnami/kubectl:1.32.0-debian-12-r0
+          # command: ["sh", "-c", "cp /conduit_def.yml /data/conduit.yml"]
+          command:
+              - /bin/sh
+          args:
+              - -c
+              - |
+                cp /conduit_def.yml /data/conduit.yml
+                export ALGOD_ADMIN_TOKEN=$(kubectl get secret -n ns-algon algon-api-token -o yaml | yq '.data["algod.admin.token"]' | base64 -d)
+                export ALGOD_TOKEN=$(kubectl get secret -n ns-algon algon-api-token -o yaml | yq '.data["algod.token"]' | base64 -d)
+                yq eval '.importer.config["token"] = env(ALGOD_TOKEN)' -i /data/conduit.yml
+                yq eval '.importer.config.catchup-config["admin-token"] = env(ALGOD_ADMIN_TOKEN)' -i /data/conduit.yml
+                cat /data/conduit.yml
           volumeMounts:
           - mountPath: /conduit_def.yml
             subPath: conduit_def.yml
