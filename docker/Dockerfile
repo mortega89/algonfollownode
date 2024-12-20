@@ -11,12 +11,10 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists/* && \
     curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.26.7/bin/linux/amd64/kubectl && \
     chmod +x ./kubectl && \
-    mv ./kubectl /usr/bin/kubectl \
-    echo "done"
+    mv ./kubectl /usr/bin/kubectl
     
 # Algorand node
-#
-#
+
 WORKDIR /algorand
 SHELL ["/bin/bash", "-c"]
 RUN curl -L https://raw.githubusercontent.com/algorand/go-algorand/rel/stable/cmd/updater/update.sh --output ./update.sh && \
