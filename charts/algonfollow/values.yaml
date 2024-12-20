@@ -36,9 +36,9 @@ nameOverride: ""
 fullnameOverride: ""
 
 image:
-  repository: algotestdumb
+  repository: ghcr.io/mortega89/algonfollownode
   # Defaults to Chart appVersion
-  tag: 1
+  tag: stable
   pullPolicy: IfNotPresent
 
 serviceAccount:
