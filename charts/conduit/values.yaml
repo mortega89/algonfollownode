@@ -46,7 +46,7 @@ conduit:
             mode: "follower"
 
             # Algod API address.
-            netaddr: "http://ALGORAND_ADDRESS:8080"
+            netaddr: "http://algonfollow:8080"
 
             # Algod API token. Found in the algod.token file.
             # token: "TOKEN FROM ALGORAND (IT IS ON A SECRET OR CONFIGMAP)"
