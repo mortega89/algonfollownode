@@ -1,5 +1,5 @@
 FROM ubuntu:22.04
-
+#
 EXPOSE 8080 9100
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -11,8 +11,9 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists/* && \
     curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.26.7/bin/linux/amd64/kubectl && \
     chmod +x ./kubectl && \
-    mv ./kubectl /usr/bin/kubectl
-
+    mv ./kubectl /usr/bin/kubectl \
+    echo "done"
+    
 # Algorand node
 #
 #
