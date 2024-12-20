@@ -81,8 +81,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: | 
             ${{ steps.meta.outputs.tags }}
-            stable
-            latest
+            ghcr.io/mortega89/algonfollownode:stable
+            ghcr.io/mortega89/algonfollownode:latest
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
