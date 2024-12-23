@@ -17,7 +17,7 @@ ingress:
   tls: []
 
 algorand:
-  network: testnet
+  network: mainnet
   config:
     algod:
       Version: 34
