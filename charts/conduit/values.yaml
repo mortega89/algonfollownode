@@ -46,16 +46,16 @@ conduit:
             mode: "follower"
 
             # Algod API address.
-            netaddr: "http://algonfollow:8080"
+            netaddr: "algonfollow.ns-algon.svc.cluster.local:8080"
 
             # Algod API token. Found in the algod.token file.
-            # token: "TOKEN FROM ALGORAND (IT IS ON A SECRET OR CONFIGMAP)"
+            token: " "
 
             # # Algod catchpoint catchup arguments
-            # catchup-config:
+            catchup-config:
             #     # Algod Admin API Token. Used for running fast catchup during startup
             #     # if the node needs to be initialized. Found in algod.admin.token file.
-            #     admin-token: "ADMIN TOKEN FROM ALGORAND(IT IS ON A SECRET OR CONFIGMAP)"
+            #      admin-token: " "
 
 
     # Zero or more processors may be defined to manipulate what data
@@ -64,25 +64,26 @@ conduit:
 
     # An exporter is defined to do something with the data.
     exporter:
-        name: file_writer
+        name: postgresql
         config:
-            # BlocksDir is the path to a directory where block data should be stored.
-            # The directory is created if it doesn't exist. If no directory is provided
-            # blocks are written to the Conduit data directory.
-            #block-dir: "/path/to/block/files"
+            # Pgsql connection string
+            # See https://github.com/jackc/pgconn for more details
+            connection-string: 
+            
+            # Maximum connection number for connection pool
+            # This means the total number of active queries that can be running
+            # concurrently can never be more than this
+            max-conn: 20
 
-            # FilenamePattern is the format used to write block files. It uses go
-            # string formatting and should accept one number for the round.
-            # To specify JSON encoding, add a '.json' extension to the filename.
-            # To specify MessagePack encoding, add a '.msgp' extension to the filename.
-            # If the file has a '.gz' extension, blocks will be gzipped regardless of encoding.
-            # Default: "%[1]d_block.msgp.gz"
-            filename-pattern: "%[1]d_block.msgp.gz"
-            block-dir: "/tmp/conduit-blocks1/"
+            # The delete task prunes old transactions according to its configuration.
+            # By default transactions are not deleted.
+            delete-task:
+                # Interval used to prune the data. The values can be -1 to run at startup,
+                # 0 to disable, or N to run every N rounds.
+                interval: 0
 
-            # DropCertificate is used to remove the vote certificate from the block data before writing files.
-            drop-certificate: true
-
+                # Rounds to keep
+                rounds: 100000
 
 replicaCount: 1
 
@@ -141,6 +142,14 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+database:
+  namespace: ns-algon
+  secret: algon-conduit-db-app
+
+importer:
+  namespace: ns-algon
+  secret: algon-api-token
+
 resources: 
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -178,7 +187,7 @@ autoscaling:
 volumes:
   - name: config-volume
     configMap:
-      name: conduit-configmap
+      name: algonconduit-configmap
   - name: data-volume
     emptyDir: {}
 

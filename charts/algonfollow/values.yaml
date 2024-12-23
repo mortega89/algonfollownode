@@ -17,7 +17,7 @@ ingress:
   tls: []
 
 algorand:
-  network: testnet
+  network: mainnet
   config:
     algod:
       Version: 34
@@ -37,6 +37,7 @@ fullnameOverride: ""
 
 image:
   repository: ghcr.io/mortega89/algonfollownode
+  #repository: ghcr.io/activadigital-it/algon
   # Defaults to Chart appVersion
   tag: stable
   pullPolicy: IfNotPresent
