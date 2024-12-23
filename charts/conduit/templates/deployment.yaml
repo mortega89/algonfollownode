@@ -1,3 +1,4 @@
+{{- $fullName := include "conduit.fullname" . -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,6 +24,12 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ $fullName }}-configmap
+        - name: data-volume
+          emptyDir: {}
       initContainers:
         - name: add-conf
           image: bitnami/kubectl:1.32.0-debian-12-r0
@@ -42,7 +49,6 @@ spec:
                 export DB_USER=$(kubectl get secret -n {{ .Values.database.namespace }} {{ .Values.database.secret }} -o yaml | yq '.data["user"]' | base64 -d)
                 export DB_HOST=$(kubectl get secret -n {{ .Values.database.namespace }} {{ .Values.database.secret }} -o yaml | yq '.data["host"]' | base64 -d)
                 yq eval '.exporter.config["connection-string"] = "host='${DB_HOST}.{{ .Values.database.namespace }}.svc.cluster.local' port=5432 user='${DB_USER}' password='${DB_PASSWORD}' dbname='${DB_NAME}'"' -i /data/conduit.yml
-                cat /data/conduit.yml
           volumeMounts:
           - mountPath: /conduit_def.yml
             subPath: conduit_def.yml
@@ -72,10 +78,6 @@ spec:
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- with .Values.volumes }}
-      volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -184,12 +184,7 @@ autoscaling:
 #   secret:
 #     secretName: mysecret
 #     optional: false
-volumes:
-  - name: config-volume
-    configMap:
-      name: algonconduit-configmap
-  - name: data-volume
-    emptyDir: {}
+
 
 
 # Additional volumeMounts on the output Deployment definition.
