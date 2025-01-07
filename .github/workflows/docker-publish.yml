@@ -139,6 +139,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: set appversion
+        run: yq -i ".appVersion = ${{needs.get-version.outputs.version}}" /home/runner/work/algonfollownode/algonfollownode/Chart.yaml
+
       - name: Install Helm
         uses: azure/setup-helm@v3
         env: 
