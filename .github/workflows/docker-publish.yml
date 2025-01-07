@@ -139,11 +139,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: debug ls
-        run: ls -lhart
-
       - name: set appversion
-        run: yq -i ".appVersion = ${{needs.get-version.outputs.version}}" charts/algonfollownode/Chart.yaml
+        run: yq -i ".appVersion = ${{needs.get-version.outputs.version}}" charts/algonfollow/Chart.yaml
 
       - name: Install Helm
         uses: azure/setup-helm@v3
