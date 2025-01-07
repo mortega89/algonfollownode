@@ -116,6 +116,7 @@ jobs:
 
 
   helm-publish:
+    needs: [build, get-version]
     runs-on: ubuntu-latest
     permissions:
       packages: write
