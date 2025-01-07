@@ -1,0 +1,36 @@
+{{- $fullName := include "conduit.fullname" (mustMerge (dict "Chart" (dict "Name" "conduit") "Values" .Values.conduit) (deepCopy .)) -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $fullName }}-configmap
+data:
+  conduit_def.yml: |
+      api:
+        addr: {{ .Values.conduit.conduit.config.api.addr }}
+      exporter: 
+        config:
+          delete-task:
+            interval: {{ index .Values.conduit.conduit.config.exporter.config "delete-task" "interval" }}
+            rounds:  {{ index .Values.conduit.conduit.config.exporter.config "delete-task" "rounds" }}
+          max-conn: {{ index .Values.conduit.conduit.config.exporter.config "max-conn" }}
+        name: {{ .Values.conduit.conduit.config.exporter.name }} 
+      hide-banner: {{ index .Values.conduit.conduit.config "hide-banner" }}
+      importer:
+        config:
+          catchup-config: {{ index .Values.conduit.conduit.config.importer.config "catchup-config" }}
+      {{- if .Values.algonfollow.enabled }}
+          netaddr: {{ .Release.Name }}-algonfollow.{{ .Release.Namespace }}.svc.cluster.local:8080
+      {{- else }}
+          netaddr: {{ .Values.conduit.conduit.config.importer.config.nettaddr }}
+      {{- end }}
+          mode: {{ .Values.conduit.conduit.config.importer.config.mode }}
+        name: {{ .Values.conduit.conduit.config.importer.name }}
+      log-level: {{ index .Values.conduit.conduit.config "log-level" }}
+      metrics:
+        addr: {{ .Values.conduit.conduit.config.metrics.addr }}
+        mode: {{ .Values.conduit.conduit.config.metrics.mode }}
+        prefix: {{ .Values.conduit.conduit.config.metrics.prefix }}
+      processors: {{ .Values.conduit.conduit.config.processors }}
+      retry-count: {{ index .Values.conduit.conduit.config "retry-count" }}
+      retry-delay: {{ index .Values.conduit.conduit.config "retry-delay" }}
+       
