@@ -21,7 +21,6 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -107,6 +106,27 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+
+  get-version:
+    needs: build
+    runs-on: ubuntu-latest
+    container: ghcr.io/mortega89/algonfollownode:stable
+    steps:
+      - run: /algorand/node/algod -v | head -n 2 | tail -n -1 | cut -d " " -f 1
+
+
+  helm-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: write
+      pull-requests: write
+      repository-projects: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+
+    steps:
       - name: Install Helm
         uses: azure/setup-helm@v3
         env: 
@@ -117,9 +137,3 @@ jobs:
         uses: helm/chart-releaser-action@v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-  version:
-    needs: build
-    runs-on: ubuntu-latest
-    container: ghcr.io/mortega89/algonfollownode:stable
-    steps:
-      - run: /algorand/node/algod -v | head -n 2 | tail -n -1 | cut -d " " -f 1
