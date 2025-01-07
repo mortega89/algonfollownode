@@ -109,15 +109,15 @@ jobs:
 
   get-version:
     outputs:
-      version: ${{ steps.algod-ver.outputs.var }}
+      version: ${{ steps.algod-ver.outputs.version }}
     needs: build
     runs-on: ubuntu-latest
     container: ghcr.io/mortega89/algonfollownode:stable
     steps:
       - id: algod-ver
-        run: /algorand/node/algod -v | head -n 2 | tail -n -1 | cut -d " " -f 1 >> "$GITHUB_OUTPUT"
-
-
+        run: |
+          VERSION=$(/algorand/node/algod -v | head -n 2 | tail -n -1 | cut -d " " -f 1)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
   helm-publish:
     needs: [build, get-version]
     runs-on: ubuntu-latest
@@ -133,6 +133,7 @@ jobs:
     steps:
       - name: print-version
         run:  echo ${{needs.get-version.outputs.version}}
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
