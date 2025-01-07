@@ -108,11 +108,14 @@ jobs:
 
 
   get-version:
+    outputs:
+      version: ${{ steps.algod-ver.outputs.var }}
     needs: build
     runs-on: ubuntu-latest
     container: ghcr.io/mortega89/algonfollownode:stable
     steps:
-      - run: /algorand/node/algod -v | head -n 2 | tail -n -1 | cut -d " " -f 1
+      - id: algod-ver
+        run: /algorand/node/algod -v | head -n 2 | tail -n -1 | cut -d " " -f 1 >> "$GITHUB_OUTPUT"
 
 
   helm-publish:
@@ -128,6 +131,8 @@ jobs:
       id-token: write
 
     steps:
+      - name: print-version
+        run:  echo ${{needs.get-version.outputs.version}}
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -142,7 +147,7 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         env:
