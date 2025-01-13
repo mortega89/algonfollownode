@@ -59,4 +59,5 @@ jobs:
               /algorand/node/algod -v | head -n 2 | tail -n 1 | cut -d ' ' -f 1 > version
               ls -lhart
               VERSION=$(./node/algod -v | head -n 2 | tail -n -1 | cut -d " " -f 1)
-              echo $VERSION "
+              echo $VERSION 
+              cat version "
