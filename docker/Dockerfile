@@ -3,8 +3,7 @@ FROM ubuntu:22.04
 EXPOSE 8080 9100
 
 ENV DEBIAN_FRONTEND=noninteractive
-#
-# kubectl & curl
+
 RUN apt update && \
     apt install -y dumb-init curl ca-certificates jq bash bind9-dnsutils && \
     apt clean && \
