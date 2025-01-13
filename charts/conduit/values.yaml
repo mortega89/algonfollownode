@@ -187,16 +187,7 @@ autoscaling:
 
 
 
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts:
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
-  - name: config-volume
-    mountPath: /conduit_def.yml
-    subPath: conduit_def.yml
-  - mountPath: /data/
-    name: data-volume
+
 nodeSelector: {}
 
 tolerations: []
