@@ -1,0 +1,127 @@
+algonfollownode:
+  affinity: {}
+  algorand:
+    config:
+      algod:
+        BaseLoggerDebugLevel: 3
+        CatchupParallelBlocks: 64
+        DNSSecurityFlags: 0
+        EnableFollowMode: true
+        LogArchiveMaxAge: 1h
+        LogArchiveName: node.archive.log
+        LogSizeLimit: 0
+        MaxAcctLookback: 64
+        NodeExporterListenAddress: :9100
+        NodeExporterPath: ./node_exporter
+        Version: 34
+    network: testnet
+  autoscaling:
+    enabled: false
+    maxReplicas: 5
+    minReplicas: 1
+    targetCPUUtilizationPercentage: 80
+  fullnameOverride: ""
+  image:
+    pullPolicy: IfNotPresent
+    repository: ghcr.io/mortega89/algonfollownode
+    tag: stable
+  ingress:
+    annotations: {}
+    enabled: false
+    hosts:
+    - host: algon.local
+      paths:
+      - /
+    ingressClassName: nginx
+  nameOverride: ""
+  nodeSelector: {}
+  podAnnotations: {}
+  podSecurityContext: {}
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 1
+      memory: 1Gi
+  securityContext: {}
+  service:
+    port: 8080
+    type: ClusterIP
+  serviceAccount:
+    annotations: {}
+    create: true
+    name: ""
+  storage:
+    size: 10Gi
+conduit:
+  affinity: {}
+  autoscaling:
+    enabled: false
+    maxReplicas: 100
+    minReplicas: 1
+    targetCPUUtilizationPercentage: 80
+  conduit:
+    config:
+      api:
+        addr: :8981
+      exporter:
+        config:
+          connection-string: null
+          delete-task:
+            interval: 0
+            rounds: 100000
+          max-conn: 20
+        name: postgresql
+      hide-banner: false
+      importer:
+        config:
+          catchup-config: null
+          mode: follower
+          netaddr: algonfollow.ns-algon.svc.cluster.local:8080
+          token: ' '
+        name: algod
+      log-level: INFO
+      metrics:
+        addr: :9999
+        mode: false
+        prefix: conduit
+      processors: null
+      retry-count: 100
+      retry-delay: 20s
+  database:
+    namespace: ns-algon
+    secret: algon-conduit-db-app
+  fullnameOverride: ""
+  image:
+    pullPolicy: IfNotPresent
+    repository: algorand/conduit
+    tag: 1.7.0-amd64
+  importer:
+    namespace: ns-algon
+    secret: algon-api-token
+  ingress:
+    annotations: {}
+    className: ""
+    enabled: false
+  nameOverride: ""
+  nodeSelector: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  securityContext: {}
+  serviceAccount:
+    annotations: {}
+    automount: true
+    create: true
+    name: ""
+
