@@ -54,6 +54,6 @@ jobs:
 
       - name: Run Docker Image
         run: |
-              docker run --rm ${{ env.IMAGE_NAME }} /bin/sh -c "
+              docker run --rm ${{ env.IMAGE_NAME }} /bin/bash -c "
               ALGOD_VERSION=$(/algorand/node/algod -v | head -n 2 | tail -n 1 | cut -d ' ' -f 1);
               echo \"Version: $ALGOD_VERSION\""
