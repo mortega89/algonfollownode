@@ -10,6 +10,7 @@ on:
     paths: 
       - '!docker/**'
       - 'charts.yaml'
+      - 'values.yaml'
       - 'charts/**'
     branches: [ "fb/workflow" ]
     # Publish semver tags as releases.
@@ -56,3 +57,5 @@ jobs:
         uses: helm/chart-releaser-action@v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with: 
+          skip_existing: true
