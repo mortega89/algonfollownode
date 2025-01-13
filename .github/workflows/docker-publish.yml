@@ -57,4 +57,7 @@ jobs:
               docker run --rm ${{ env.IMAGE_NAME }} /bin/bash -c "
               /algorand/node/algod -v | head -n 2 | tail -n 1 | cut -d ' ' -f 1 
               /algorand/node/algod -v | head -n 2 | tail -n 1 | cut -d ' ' -f 1 > version
-              echo \"Version: $(cat version)\""
+              ls -lhart
+              VERSION=$(/algorand/node/algod -v | head -n 2 | tail -n -1 | cut -d " " -f 1)
+              echo $VERSION
+              echo Version: $(cat version)
