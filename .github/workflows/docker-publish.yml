@@ -56,7 +56,8 @@ jobs:
         id: run
         run: |
               docker run --rm ${{ env.IMAGE_NAME }} /bin/bash -c "
-              /algorand/node/algod -v | head -n 2 | tail -n 1 | cut -d ' ' -f 1 " > "$GITHUB_OUTPUT"
+              ALGOVERSION=$(/algorand/node/algod -v | head -n 2 | tail -n 1 | cut -d ' ' -f 1 )
+              echo algoversion=\"$ALGOVERSION\" > \"$GITHUB_OUTPUT\" "
       
       - name: Build and push Docker image
         id: build-and-push
@@ -66,7 +67,7 @@ jobs:
           file: ./docker/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: | 
-            ghcr.io/mortega89/algonfollownode:${{ steps.run.outputs.stdout }}
+            ghcr.io/mortega89/algonfollownode:${{ steps.run.outputs.algoversion }}
             ghcr.io/mortega89/algonfollownode:stable
             ghcr.io/mortega89/algonfollownode:latest
           cache-from: type=gha
