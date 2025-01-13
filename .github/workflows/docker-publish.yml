@@ -15,7 +15,7 @@ on:
     branches: [ "fb/workflow" ]
 
 env:
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{ github.repository }}:test
 
 
 jobs:
@@ -50,11 +50,16 @@ jobs:
           load: true
           context: ./docker
           file: ./docker/Dockerfile
-          tags: ${{ env.IMAGE_NAME }}:test 
+          tags: ${{ env.IMAGE_NAME }} 
 
       - name: Run Docker Image
         run: |
-            docker run --rm ${{ env.IMAGE_NAME }}:test /bin/sh -c "
+            docker run --rm ${{ env.IMAGE_NAME }} /bin/sh -c "
+            ls
+            pwd
             hostname 
+            cat /etc/os-release
+            find / -iname algod
+            /algorand/node/algod -v 
             VERSION=$(/algorand/node/algod -v | head -n 2 | tail -n -1 | cut -d ' ' -f 1);
             echo \"Version: $VERSION\""
