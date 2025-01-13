@@ -7,10 +7,12 @@ name: Docker
 
 on:
   push:
-    branches: [ "main" ]
+    paths: 
+      - 'docker/**'
+    branches: [ "workflow" ]
     # Publish semver tags as releases.
   pull_request:
-    branches: [ "main" ]
+    branches: [ "workflow" ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -37,13 +39,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Install the cosign tool except on PR
-      # https://github.com/sigstore/cosign-installer
-      - name: Install cosign
-        if: github.event_name != 'pull_request'
-        uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 #v3.5.0
-        with:
-          cosign-release: 'v2.2.4'
 
       # Set up BuildKit Docker container builder to be able to build
       # multi-platform images and export cache
@@ -51,108 +46,22 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
 
-      # Login against a Docker registry except on PR
-      # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-      # Build and push Docker image with Buildx (don't push on PR)
-      # https://github.com/docker/build-push-action
-      - name: Build and push Docker image
-        id: build-and-push
-        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
+      - name: Build Docker image
+        id: build-image
+        uses: docker/build-push-action@v6
         with:
           context: ./docker
           file: ./docker/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: | 
-            ${{ steps.meta.outputs.tags }}
-            ghcr.io/mortega89/algonfollownode:stable
-            ghcr.io/mortega89/algonfollownode:latest
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-
-      # Sign the resulting Docker image digest except on PRs.
-      # This will only write to the public Rekor transparency log when the Docker
-      # repository is public to avoid leaking data.  If you would like to publish
-      # transparency data even for private images, pass --force to cosign below.
-      # https://github.com/sigstore/cosign
-      - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }}
-        env:
-          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
-          TAGS: ${{ steps.meta.outputs.tags }}
-          DIGEST: ${{ steps.build-and-push.outputs.digest }}
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
+          load: true
+          tags: ${{ env.IMAGE_NAME }}:test 
 
   get-version:
-    outputs:
-      version: ${{ steps.algod-ver.outputs.version }}
+    runs-on: ubuntu-latest
     needs: build
-    runs-on: ubuntu-latest
-    container: ghcr.io/mortega89/algonfollownode:stable
     steps:
-      - id: algod-ver
+      - name: Run container and get version
         run: |
-          VERSION=$(/algorand/node/algod -v | head -n 2 | tail -n -1 | cut -d " " -f 1)
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-  helm-publish:
-    needs: [build, get-version]
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: write
-      pull-requests: write
-      repository-projects: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
-      id-token: write
-
-    steps:
-      - name: print-version
-        run:  echo ${{needs.get-version.outputs.version}}
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: set appversion
-        run: yq -i ".appVersion = \"${{needs.get-version.outputs.version}}\"" charts/algonfollow/Chart.yaml
-
-      - name: Install Helm
-        uses: azure/setup-helm@v3
-        env: 
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          docker run --rm ${{ env.IMAGE_NAME }}:test /bin/sh -c "
+            VERSION=$(/algorand/node/algod -v | head -n 2 | tail -n -1 | cut -d ' ' -f 1);
+            echo \"Version: $VERSION\""
