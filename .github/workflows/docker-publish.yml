@@ -47,6 +47,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
+          load: true
           context: ./docker
           file: ./docker/Dockerfile
           tags: ${{ env.IMAGE_NAME }}:test 
