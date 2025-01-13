@@ -17,6 +17,7 @@ RUN apt update && \
 
 WORKDIR /algorand
 SHELL ["/bin/bash", "-c"]
+RUN echo "test"
 RUN curl -L https://raw.githubusercontent.com/algorand/go-algorand/rel/stable/cmd/updater/update.sh --output ./update.sh && \
     chmod -v 744 ./update.sh && \
     mkdir node && \
