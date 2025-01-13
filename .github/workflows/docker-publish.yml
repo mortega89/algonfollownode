@@ -70,7 +70,7 @@ jobs:
       
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
+      - name: Log into registry
         if: github.event_name != 'pull_request'
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
@@ -86,7 +86,7 @@ jobs:
           file: ./docker/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: | 
-            ghcr.io/mortega89/algonfollownode:${{ steps.run.outputs.version }}
+            ghcr.io/mortega89/algonfollownode:ubuntu2204-${{ steps.run.outputs.version }}
             ghcr.io/mortega89/algonfollownode:stable
             ghcr.io/mortega89/algonfollownode:latest
           cache-from: type=gha
@@ -105,8 +105,8 @@ jobs:
       #   # against the sigstore community Fulcio instance.
       #   run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
 
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      # - name: Configure Git
+      #   run: |
+      #     git config user.name "$GITHUB_ACTOR"
+      #     git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
           
