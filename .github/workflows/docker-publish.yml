@@ -56,12 +56,8 @@ jobs:
           load: true
           tags: ${{ env.IMAGE_NAME }}:test 
 
-  get-version:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Run container and get version
+      - name: Run Docker Image
         run: |
-          docker run --rm ${{ env.IMAGE_NAME }}:test /bin/sh -c "
+            docker run --rm ${{ env.IMAGE_NAME }}:test /bin/sh -c "
             VERSION=$(/algorand/node/algod -v | head -n 2 | tail -n -1 | cut -d ' ' -f 1);
             echo \"Version: $VERSION\""
