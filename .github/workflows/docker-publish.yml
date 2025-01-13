@@ -9,10 +9,10 @@ on:
   push:
     paths: 
       - 'docker/**'
-    branches: [ "workflow" ]
+    branches: [ "fb/workflow" ]
     # Publish semver tags as releases.
   pull_request:
-    branches: [ "workflow" ]
+    branches: [ "fb/workflow" ]
 
 env:
   # Use docker.io for Docker Hub if empty
