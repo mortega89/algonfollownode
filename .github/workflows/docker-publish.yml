@@ -16,7 +16,7 @@ on:
 
 env:
   IMAGE_NAME: ${{ github.repository }}:test
-
+  REGISTRY: ghcr.io
 
 jobs:
   build:
@@ -36,6 +36,14 @@ jobs:
         with:
           fetch-depth: 0
 
+
+      # Install the cosign tool except on PR
+      # https://github.com/sigstore/cosign-installer
+      - name: Install cosign
+        if: github.event_name != 'pull_request'
+        uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 #v3.5.0
+        with:
+          cosign-release: 'v2.2.4'
 
       # Set up BuildKit Docker container builder to be able to build
       # multi-platform images and export cache
@@ -58,6 +66,17 @@ jobs:
               algover=$(docker run --rm ${{ env.IMAGE_NAME }} /bin/bash -c "
               /algorand/node/algod -v | head -n 2 | tail -n 1 | cut -d ' ' -f 1")
               echo "version=$algover" > "$GITHUB_OUTPUT"
+      
+      
+      # Login against a Docker registry except on PR
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
         id: build-and-push
@@ -72,3 +91,20 @@ jobs:
             ghcr.io/mortega89/algonfollownode:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Sign the published Docker image
+        if: ${{ github.event_name != 'pull_request' }}
+        env:
+          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+          TAGS: |
+               ghcr.io/mortega89/algonfollownode:${{ steps.run.outputs.version }}
+               ghcr.io/mortega89/algonfollownode:stable
+               ghcr.io/mortega89/algonfollownode:latest         
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+        # This step uses the identity token to provision an ephemeral certificate
+        # against the sigstore community Fulcio instance.
+        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          
