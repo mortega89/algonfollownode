@@ -87,8 +87,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: | 
             ghcr.io/mortega89/algonfollownode:${{ steps.run.outputs.version }}-ubuntu2204
-            ghcr.io/mortega89/algonfollownode:stable
-            ghcr.io/mortega89/algonfollownode:latest
+            ghcr.io/mortega89/algonfollownode:workflow-stable
+            ghcr.io/mortega89/algonfollownode:workflow-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
