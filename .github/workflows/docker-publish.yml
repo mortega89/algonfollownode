@@ -57,7 +57,7 @@ jobs:
         run: |
               algover=$(docker run --rm ${{ env.IMAGE_NAME }} /bin/bash -c "
               /algorand/node/algod -v | head -n 2 | tail -n 1 | cut -d ' ' -f 1")
-              echo "version: \"$algover\""
+              echo "version=$algover"
 
       - name: Build and push Docker image
         id: build-and-push
