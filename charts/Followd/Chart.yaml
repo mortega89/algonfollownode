@@ -5,7 +5,7 @@ dependencies:
   repository: https://mortega89.github.io/algonfollownode
   version: 1.0.0
 - name: conduit
-  repository: https://mortega89.github.io/conduit
+  repository: https://mortega89.github.io/algonfollownode
   version: 1.0.1
 description: Followd is a chart with Algonfollow (Algorand node in follow mode) and Conduit subcharts
 name: Followd
