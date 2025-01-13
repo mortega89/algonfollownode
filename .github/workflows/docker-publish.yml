@@ -86,7 +86,7 @@ jobs:
           file: ./docker/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: | 
-            ghcr.io/mortega89/algonfollownode:ubuntu2204-${{ steps.run.outputs.version }}
+            ghcr.io/mortega89/algonfollownode:${{ steps.run.outputs.version }}-ubuntu2204
             ghcr.io/mortega89/algonfollownode:stable
             ghcr.io/mortega89/algonfollownode:latest
           cache-from: type=gha
