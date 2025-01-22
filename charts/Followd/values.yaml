@@ -85,7 +85,6 @@ conduit:
         config:
           catchup-config: null
           mode: follower
-          # netaddr: followd1-algonfollow.stocaz.svc.cluster.local:8080
           token: ''
         name: algod
       log-level: INFO
