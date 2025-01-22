@@ -70,6 +70,7 @@ conduit:
 # chart will create configmap from his template file and by using specific 
 # algon nettaddr and postgres connection string
     UsingFollowdChart: true
+
     config:
       api:
         addr: :8981
@@ -95,10 +96,17 @@ conduit:
       retry-count: 100
       retry-delay: 20s
   
-  # this for existing database, if postgres is enable in this chart, this get ignored
-  database:
-    # namespace: namespace
-    # secret: secret
+  # this for existing database. if postgres is enable in this chart, this get ignored
+    database:
+      username: postgresql
+      databaseName: postgresql
+      hostaddr: postgres1-postgresql
+      existingSecret:
+        name: postgres1-postgresql
+        namespace: stocaz
+        passwordKey: password
+      # namespace: namespace
+      # secret: secret
   fullnameOverride: ""
   image:
     pullPolicy: IfNotPresent
@@ -107,8 +115,8 @@ conduit:
   
   # api-token secret, this get ignored if algonfollow is installed from this chart directly
   importer:
-    # namespace: namespace
-    # secret: secret
+    namespace: stocaz
+    secret: algon-api-token
   ingress:
     annotations: {}
     className: ""

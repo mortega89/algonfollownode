@@ -46,7 +46,8 @@ conduit:
             mode: "follower"
 
             # Algod API address.
-            netaddr: "algonfollow.ns-algon.svc.cluster.local:8080"
+            # This get ignored if you are using Followd chart
+            netaddr: "algonfollow.namespace.svc.cluster.local:8080"
 
             # Algod API token. Found in the algod.token file.
 
@@ -80,7 +81,18 @@ conduit:
 
                 # Rounds to keep
                 rounds: 100000
-
+# Specify postgres parameters if using standalone conduit chart
+# with an external or incluster postgres not part of Followd chart (main chart)
+database:
+  username: username
+  databaseName: databasename
+  hostaddr: postgresaddress
+  existingSecret:
+    name: secretname
+    namespace: namespace
+    passwordKey: passwordKey
+  # namespace: namespace
+  # secret: secret
 replicaCount: 1
 
 image:
@@ -138,12 +150,13 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-database:
-  namespace: ns-algon
-  secret: algon-conduit-db-app
+# database:
+#   namespace: ns-algon
+#   secret: algon-conduit-db-app
 
+# This is get ignored if you are using Followd chart (Main Chart)
 importer:
-  namespace: ns-algon
+  namespace: namespace
   secret: algon-api-token
 
 resources: 

@@ -23,7 +23,7 @@ data:
       importer:
         config:
           catchup-config: {{ index .Values.conduit.config.importer.config "catchup-config" }}
-          netaddr: {{ .Values.conduit.config.importer.config.nettaddr }}
+          netaddr: {{ .Values.conduit.config.importer.config.netaddr }}
           mode: {{ .Values.conduit.config.importer.config.mode }}
         name: {{ .Values.conduit.config.importer.name }}
       log-level: {{ index .Values.conduit.config "log-level" }}

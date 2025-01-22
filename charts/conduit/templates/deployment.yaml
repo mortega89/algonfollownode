@@ -66,13 +66,13 @@ spec:
                 export DB_NAME=$(kubectl get secret -n {{ .Release.Namespace }} {{ .Release.Name }}-cluster-app -o yaml | yq '.data["dbname"]' | base64 -d)
                 export DB_USER=$(kubectl get secret -n {{ .Release.Namespace }} {{ .Release.Name }}-cluster-app -o yaml | yq '.data["user"]' | base64 -d)
                 export DB_HOST=$(kubectl get secret -n {{ .Release.Namespace }} {{ .Release.Name }}-cluster-app -o yaml | yq '.data["host"]' | base64 -d)
-                yq eval '.exporter.config["connection-string"] = "host='${DB_HOST}.{{ .Release.Namespace }}.svc' port=5432 user='${DB_USER}' password='${DB_PASSWORD}' dbname='${DB_NAME}'"' -i /data/conduit.yml
+                yq eval '.exporter.config["connection-string"] = "host='${DB_HOST}.{{ .Release.Namespace }}.svc' port=5432 user='${DB_USER}' password='${DB_PASSWORD}' dbname='${DB_NAME}'"' -i /data/conduit.yml   
                 {{- else }}
-                export DB_PASSWORD=$(kubectl get secret -n {{ .Values.database.namespace }} {{ .Values.database.secret }} -o yaml | yq '.data["password"]' | base64 -d)
-                export DB_NAME=$(kubectl get secret -n {{ .Values.database.namespace }} {{ .Values.database.secret }} -o yaml | yq '.data["dbname"]' | base64 -d)
-                export DB_USER=$(kubectl get secret -n {{ .Values.database.namespace }} {{ .Values.database.secret }} -o yaml | yq '.data["user"]' | base64 -d)
-                export DB_HOST=$(kubectl get secret -n {{ .Values.database.namespace }} {{ .Values.database.secret }} -o yaml | yq '.data["host"]' | base64 -d)
-                yq eval '.exporter.config["connection-string"] = "host='${DB_HOST}.{{ .Values.database.namespace }}.svc.cluster.local' port=5432 user='${DB_USER}' password='${DB_PASSWORD}' dbname='${DB_NAME}'"' -i /data/conduit.yml
+                export DB_PASSWORD=$(kubectl get secret -n {{ .Values.database.existingSecret.namespace }} {{ .Values.database.existingSecret.name }} -o yaml | yq '.data["{{ .Values.database.existingSecret.passwordKey  }}"]' | base64 -d)
+                export DB_NAME={{ .Values.database.databaseName }}
+                export DB_USER={{ .Values.database.username }}
+                export DB_HOST={{ .Values.database.hostaddr }}
+                yq eval '.exporter.config["connection-string"] = "host='${DB_HOST}' port=5432 user='${DB_USER}' password='${DB_PASSWORD}' dbname='${DB_NAME}'"' -i /data/conduit.yml
                 {{- end }}
           volumeMounts:
           - mountPath: /conduit_def.yml
