@@ -1,7 +1,7 @@
 # Default values for conduit.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-# 1
+
 conduit:
   config:
 # Log verbosity: PANIC, FATAL, ERROR, WARN, INFO, DEBUG, TRACE
@@ -49,7 +49,6 @@ conduit:
             netaddr: "algonfollow.ns-algon.svc.cluster.local:8080"
 
             # Algod API token. Found in the algod.token file.
-            token: " "
 
             # # Algod catchpoint catchup arguments
             catchup-config:
@@ -66,9 +65,6 @@ conduit:
     exporter:
         name: postgresql
         config:
-            # Pgsql connection string
-            # See https://github.com/jackc/pgconn for more details
-            connection-string: 
             
             # Maximum connection number for connection pool
             # This means the total number of active queries that can be running
@@ -91,7 +87,7 @@ image:
   repository: algorand/conduit
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.7.0"
+  tag: "1.7.0-amd64"
 
 imagePullSecrets: []
 nameOverride: ""

@@ -1,4 +1,4 @@
-# Default values for algon.
+# Default values for algonfollow.
 
 replicaCount: 1
 
@@ -38,7 +38,6 @@ fullnameOverride: ""
 image:
   repository: ghcr.io/mortega89/algonfollownode
   #repository: ghcr.io/activadigital-it/algon
-  # Defaults to Chart appVersion
   tag: stable
   pullPolicy: IfNotPresent
 
@@ -52,16 +51,6 @@ podAnnotations: {}
 podSecurityContext: {}
 
 securityContext: {}
-  # privileged: false
-  # readOnlyRootFilesystem: true
-  # allowPrivilegeEscalation: false
-  # runAsUser: 10001
-  # runAsGroup: 10001
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # seccompProfile:
-  #   type: RuntimeDefault
 
 resources:
   limits:

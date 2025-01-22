@@ -1,7 +1,37 @@
 {{- $fullName := include "conduit.fullname" . -}}
+{{- if not .Values.conduit.UsingFollowdChart }}
+
+# If using Followd chart, the configmap comes from the main chart 
+# automatically by retrieving data from subcharts, instead the conduit 
+# chart will create configmap from his template file
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ $fullName }}-configmap
 data:
-  conduit_def.yml: {{ .Values.conduit.config | toYaml | quote }} 
+  conduit_def.yml: |
+      api:
+        addr: {{ .Values.conduit.config.api.addr }}
+      exporter: 
+        config:
+          delete-task:
+            interval: {{ index .Values.conduit.config.exporter.config "delete-task" "interval" }}
+            rounds:  {{ index .Values.conduit.config.exporter.config "delete-task" "rounds" }}
+          max-conn: {{ index .Values.conduit.config.exporter.config "max-conn" }}
+        name: {{ .Values.conduit.config.exporter.name }} 
+      hide-banner: {{ index .Values.conduit.config "hide-banner" }}
+      importer:
+        config:
+          catchup-config: {{ index .Values.conduit.config.importer.config "catchup-config" }}
+          netaddr: {{ .Values.conduit.config.importer.config.nettaddr }}
+          mode: {{ .Values.conduit.config.importer.config.mode }}
+        name: {{ .Values.conduit.config.importer.name }}
+      log-level: {{ index .Values.conduit.config "log-level" }}
+      metrics:
+        addr: {{ .Values.conduit.config.metrics.addr }}
+        mode: {{ .Values.conduit.config.metrics.mode }}
+        prefix: {{ .Values.conduit.config.metrics.prefix }}
+      processors: {{ .Values.conduit.config.processors }}
+      retry-count: {{ index .Values.conduit.config "retry-count" }}
+      retry-delay: {{ index .Values.conduit.config "retry-delay" }}
+{{- end }}

@@ -40,15 +40,40 @@ spec:
               - -c
               - |
                 cp /conduit_def.yml /data/conduit.yml
+                {{- if .Values.conduit.UsingFollowdChart }}
+                while kubectl get secret -n {{ .Release.Namespace }} algon-api-token ; [ $? -ne 0 ] 2>/dev/null;do
+                sleep 10
+                echo "Waiting for the secret: {{ .Release.Namespace }} algon-api-token availability, is algonfollow running?"
+                done
+                sleep 20
+                export ALGOD_ADMIN_TOKEN=$(kubectl get secret -n {{ .Release.Namespace }} algon-api-token -o yaml | yq '.data["algod.admin.token"]' | base64 -d)
+                export ALGOD_TOKEN=$(kubectl get secret -n {{ .Release.Namespace }} algon-api-token -o yaml | yq '.data["algod.token"]' | base64 -d)
+                yq eval '.importer.config["token"] = env(ALGOD_TOKEN)' -i /data/conduit.yml
+                yq eval '.importer.config.catchup-config["admin-token"] = env(ALGOD_ADMIN_TOKEN)' -i /data/conduit.yml
+                {{- else}}
+                while kubectl get secret -n {{ .Values.importer.namespace }} {{ .Values.importer.secret }} ; [ $? -ne 0 ] 2>/dev/null;do
+                sleep 10
+                echo "Waiting for the secret: {{ .Values.importer.namespace }} {{ .Values.importer.secret }} availability, is algonfollow running?"
+                done
+                sleep 20
                 export ALGOD_ADMIN_TOKEN=$(kubectl get secret -n {{ .Values.importer.namespace }} {{ .Values.importer.secret }} -o yaml | yq '.data["algod.admin.token"]' | base64 -d)
                 export ALGOD_TOKEN=$(kubectl get secret -n {{ .Values.importer.namespace }} {{ .Values.importer.secret }} -o yaml | yq '.data["algod.token"]' | base64 -d)
                 yq eval '.importer.config["token"] = env(ALGOD_TOKEN)' -i /data/conduit.yml
                 yq eval '.importer.config.catchup-config["admin-token"] = env(ALGOD_ADMIN_TOKEN)' -i /data/conduit.yml
+                {{- end}}
+                {{- if .Values.conduit.UsingFollowdChart }}
+                export DB_PASSWORD=$(kubectl get secret -n {{ .Release.Namespace }} {{ .Release.Name }}-cluster-app -o yaml | yq '.data["password"]' | base64 -d)
+                export DB_NAME=$(kubectl get secret -n {{ .Release.Namespace }} {{ .Release.Name }}-cluster-app -o yaml | yq '.data["dbname"]' | base64 -d)
+                export DB_USER=$(kubectl get secret -n {{ .Release.Namespace }} {{ .Release.Name }}-cluster-app -o yaml | yq '.data["user"]' | base64 -d)
+                export DB_HOST=$(kubectl get secret -n {{ .Release.Namespace }} {{ .Release.Name }}-cluster-app -o yaml | yq '.data["host"]' | base64 -d)
+                yq eval '.exporter.config["connection-string"] = "host='${DB_HOST}.{{ .Release.Namespace }}.svc' port=5432 user='${DB_USER}' password='${DB_PASSWORD}' dbname='${DB_NAME}'"' -i /data/conduit.yml
+                {{- else }}
                 export DB_PASSWORD=$(kubectl get secret -n {{ .Values.database.namespace }} {{ .Values.database.secret }} -o yaml | yq '.data["password"]' | base64 -d)
                 export DB_NAME=$(kubectl get secret -n {{ .Values.database.namespace }} {{ .Values.database.secret }} -o yaml | yq '.data["dbname"]' | base64 -d)
                 export DB_USER=$(kubectl get secret -n {{ .Values.database.namespace }} {{ .Values.database.secret }} -o yaml | yq '.data["user"]' | base64 -d)
                 export DB_HOST=$(kubectl get secret -n {{ .Values.database.namespace }} {{ .Values.database.secret }} -o yaml | yq '.data["host"]' | base64 -d)
                 yq eval '.exporter.config["connection-string"] = "host='${DB_HOST}.{{ .Values.database.namespace }}.svc.cluster.local' port=5432 user='${DB_USER}' password='${DB_PASSWORD}' dbname='${DB_NAME}'"' -i /data/conduit.yml
+                {{- end }}
           volumeMounts:
           - mountPath: /conduit_def.yml
             subPath: conduit_def.yml
@@ -74,10 +99,12 @@ spec:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+          - mountPath: /conduit_def.yml
+            subPath: conduit_def.yml
+            name: config-volume
+          - mountPath: /data/
+            name: data-volume
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
