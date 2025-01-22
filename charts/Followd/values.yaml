@@ -85,7 +85,6 @@ conduit:
         config:
           catchup-config: null
           mode: follower
-          token: ''
         name: algod
       log-level: INFO
       metrics:
