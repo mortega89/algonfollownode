@@ -1,8 +1,7 @@
 algonfollow:
-  enabled: true 
+  enabled: true
   affinity: {}
   algorand:
-    enabled: true
     config:
       algod:
         BaseLoggerDebugLevel: 3
@@ -66,6 +65,10 @@ conduit:
       maxReplicas: 100
       minReplicas: 1
       targetCPUUtilizationPercentage: 80
+# If using Followd chart, the configmap comes from the main chart 
+# automatically by retrieving data from subcharts, instead the conduit 
+# chart will create configmap from his template file and by using specific 
+# algon nettaddr and postgres connection string
     UsingFollowdChart: true
     config:
       api:
@@ -94,7 +97,7 @@ conduit:
       retry-count: 100
       retry-delay: 20s
   
-#this for existing database, if postgres is enable in this chart, this get ignored
+  # this for existing database, if postgres is enable in this chart, this get ignored
   database:
     # namespace: namespace
     # secret: secret
@@ -103,10 +106,11 @@ conduit:
     pullPolicy: IfNotPresent
     repository: algorand/conduit
     tag: 1.7.0-amd64
+  
+  # api-token secret, this get ignored if algonfollow is installed from this chart directly
   importer:
-    #this get ignored if algonfollow is installed from this chart directly
     # namespace: namespace
-    # secret: algon-api-token (secret)
+    # secret: secret
   ingress:
     annotations: {}
     className: ""

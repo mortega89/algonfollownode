@@ -105,80 +105,8 @@ jobs:
       #   # against the sigstore community Fulcio instance.
       #   run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
 
-<<<<<<< HEAD
-      # Sign the resulting Docker image digest except on PRs.
-      # This will only write to the public Rekor transparency log when the Docker
-      # repository is public to avoid leaking data.  If you would like to publish
-      # transparency data even for private images, pass --force to cosign below.
-      # https://github.com/sigstore/cosign
-      - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }}
-        env:
-          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
-          TAGS: ${{ steps.meta.outputs.tags }}
-          DIGEST: ${{ steps.build-and-push.outputs.digest }}
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-
-  get-version:
-    outputs:
-      version: ${{ steps.algod-ver.outputs.version }}
-    needs: build
-    runs-on: ubuntu-latest
-    container: ghcr.io/mortega89/algonfollownode:stable
-    steps:
-      - id: algod-ver
-        run: |
-          VERSION=$(/algorand/node/algod -v | head -n 2 | tail -n -1 | cut -d " " -f 1)
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-  helm-publish:
-    needs: [build, get-version]
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: write
-      pull-requests: write
-      repository-projects: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
-      id-token: write
-
-    steps:
-      - name: print-version
-        run:  echo ${{needs.get-version.outputs.version}}
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: set appversion
-        run: yq -i ".appVersion = \"${{needs.get-version.outputs.version}}\"" charts/algonfollow/Chart.yaml
-
-      - name: Install Helm
-        uses: azure/setup-helm@v3
-        env: 
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-=======
       # - name: Configure Git
       #   run: |
       #     git config user.name "$GITHUB_ACTOR"
       #     git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
           
->>>>>>> 7405af7 (feat(Followd): add main chart)
