@@ -8,12 +8,14 @@ name: Docker
 on:
   push:
     paths: 
-      - 'charts/**/Charts.yaml'
+      - '!docker/**'
+      - 'charts/**'
     branches: [ "main" ]
     # Publish semver tags as releases.
   pull_request:
     paths: 
-      - 'charts/**/Charts.yaml'  
+      - '!docker/**'
+      - 'charts/**'      
     branches: [ "main" ]
 
 env:
