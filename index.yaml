@@ -2,6 +2,30 @@ apiVersion: v1
 entries:
   Followd:
   - apiVersion: v2
+    appVersion: 2.0.6
+    created: "2025-01-23T10:14:16.083305005Z"
+    dependencies:
+    - condition: algonfollow.enabled
+      name: algonfollow
+      repository: https://mortega89.github.io/algonfollownode
+      version: 1.0.3
+    - condition: conduit.enabled
+      name: conduit
+      repository: https://mortega89.github.io/algonfollownode
+      version: 2.0.1
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 16.4.3
+    description: Followd is a chart with Algonfollow (Algorand node in follow mode)
+      and Conduit subcharts
+    digest: 0c4a1c069a520064c1a51a4f3a98cb1d4ff56839fcebc7c618cd5a9fd03b53e5
+    name: Followd
+    type: application
+    urls:
+    - https://github.com/mortega89/algonfollownode/releases/download/Followd-2.0.6/Followd-2.0.6.tgz
+    version: 2.0.6
+  - apiVersion: v2
     appVersion: 1.0.1
     created: "2025-01-22T15:50:37.144154357Z"
     dependencies:
@@ -250,4 +274,4 @@ entries:
     urls:
     - https://github.com/mortega89/algonfollownode/releases/download/conduit-0.1.1/conduit-0.1.1.tgz
     version: 0.1.1
-generated: "2025-01-23T10:08:37.187968594Z"
+generated: "2025-01-23T10:14:16.083349308Z"
