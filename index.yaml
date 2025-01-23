@@ -155,6 +155,16 @@ entries:
   algonfollow:
   - apiVersion: v2
     appVersion: 3.27.0
+    created: "2025-01-23T10:19:05.943332587Z"
+    description: Stable channel Algorand node helm chart
+    digest: 42a07284d10c7890e33a0af3b792235199149b1f2374d492766f95dde3da9e30
+    name: algonfollow
+    type: application
+    urls:
+    - https://github.com/mortega89/algonfollownode/releases/download/algonfollow-1.0.5/algonfollow-1.0.5.tgz
+    version: 1.0.5
+  - apiVersion: v2
+    appVersion: 3.27.0
     created: "2025-01-23T10:16:06.02397061Z"
     description: Stable channel Algorand node helm chart
     digest: dc4d7d38cc5b7c3f8eb143345a7c2b455002bc38d813d06526c27a43f309a9be
@@ -194,6 +204,16 @@ entries:
     - https://github.com/mortega89/algonfollownode/releases/download/algonfollow-1.0.0/algonfollow-1.0.0.tgz
     version: 1.0.0
   conduit:
+  - apiVersion: v2
+    appVersion: 1.7.0
+    created: "2025-01-23T10:19:06.101540138Z"
+    description: A Conduit chart per algorand follow node
+    digest: ec31b7239ca29da8d8708fbf7b10990d8d757eae54a12c755b18c2518e27d6ad
+    name: conduit
+    type: application
+    urls:
+    - https://github.com/mortega89/algonfollownode/releases/download/conduit-2.0.3/conduit-2.0.3.tgz
+    version: 2.0.3
   - apiVersion: v2
     appVersion: 1.7.0
     created: "2025-01-23T10:16:06.120071764Z"
@@ -294,4 +314,4 @@ entries:
     urls:
     - https://github.com/mortega89/algonfollownode/releases/download/conduit-0.1.1/conduit-0.1.1.tgz
     version: 0.1.1
-generated: "2025-01-23T10:16:06.120142476Z"
+generated: "2025-01-23T10:19:06.101631489Z"
