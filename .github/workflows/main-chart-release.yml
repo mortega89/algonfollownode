@@ -8,14 +8,12 @@ name: helm
 on:
   push:
     paths: 
-      - '!docker/**'
-      - 'charts/**'
+      - 'MainChart/**'
     branches: [ "main" ]
     # Publish semver tags as releases.
   pull_request:
     paths: 
-      - '!docker/**'
-      - 'charts/**'
+      - 'MainChart/**'
     branches: [ "main" ]
 
 env:
@@ -43,7 +41,6 @@ jobs:
         with:
           fetch-depth: 0
 
-
       - name: Install Helm
         uses: azure/setup-helm@v3
         env: 
@@ -54,10 +51,10 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: Run chart-releaser
+      - name: Run chart-releaser on MainChart
         uses: helm/chart-releaser-action@v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with: 
           skip_existing: true
-          charts_dir: charts
+          charts_dir: MainChart
