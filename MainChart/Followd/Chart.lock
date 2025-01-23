@@ -1,0 +1,12 @@
+dependencies:
+- name: algonfollow
+  repository: https://mortega89.github.io/algonfollownode
+  version: 1.0.1
+- name: conduit
+  repository: https://mortega89.github.io/algonfollownode
+  version: 1.0.2
+- name: postgresql
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 16.4.3
+digest: sha256:1c6e08cdbd2a7029dd90a54ae7e9ef812d813af733e80a4f21bf6ecc12eb1c4a
+generated: "2025-01-22T18:29:38.052704326+01:00"
