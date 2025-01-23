@@ -62,6 +62,7 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with: 
           skip_existing: true
+          charts_dir: charts
 
       - name: Run chart-releaser on MainChart
         uses: helm/chart-releaser-action@v1.6.0

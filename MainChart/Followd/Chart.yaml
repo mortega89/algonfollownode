@@ -1,13 +1,13 @@
 apiVersion: v2
-appVersion: 2.0.6
+appVersion: 2.0.7
 dependencies:
 - name: algonfollow
   repository: https://mortega89.github.io/algonfollownode
-  version: 1.0.4
+  version: 1.0.5
   condition: algonfollow.enabled
 - name: conduit
   repository: https://mortega89.github.io/algonfollownode
-  version: 2.0.2
+  version: 2.0.3
   condition: conduit.enabled
 - name: postgresql
   version: 16.4.3
@@ -17,5 +17,5 @@ dependencies:
 description: Followd is a chart with Algonfollow (Algorand node in follow mode) and Conduit subcharts
 name: Followd
 type: application
-version: 2.0.6
+version: 2.0.7
 
