@@ -1,15 +1,19 @@
-# algon
+# AlgonFollowNode
 
-![Release Status](https://github.com/ActivaDigital-it/algon/actions/workflows/release.yaml/badge.svg)
+> this is the fully integrated main chart that includes dependency on Activadigital: Conduit chart, Activadigital: Algonfollow chart and Bitnami: Postgres chart
 
-Algorand node stable channel helm chart compatible with testnet and mainnet.
+![Release Status Main Chart](https://github.com/mortega89/algonfollownode/actions/workflows/main-chart-release.yml/badge.svg)
 
-## Features
+> this is the status of the two generated subcharts (Algonfollow and Conduit)
 
-- Fast catchup https://developer.algorand.org/docs/run-a-node/setup/install/#sync-node-network-using-fast-catchup
-- Node config.json management
-- Data persistence with persistent volumes https://kubernetes.io/docs/concepts/storage/persistent-volumes/
-- Load-balancing [example](example/load-balancer/README.md)
+![Release Status SubCharts](https://github.com/mortega89/algonfollownode/actions/workflows/chart-release.yml/badge.svg)
+
+
+This repo provide Algorand follow mode helm chart with Conduit and Postgres integration compatible with testnet and mainnet. This is based on Algorand node stable channel.
+
+
+![AlgonFollowNode Schema](./images/SubchartSchema.png)
+
 
 ## Prerequisites
 
@@ -38,15 +42,14 @@ The node must be able to reach:
 ## Install
 
 ```sh
-helm repo add algon https://activadigital-it.github.io/algon
+helm repo add mortega89 https://mortega89.github.io/algonfollow
 helm repo update
-kubectl create namespace algon
-helm upgrade --install algon algon/algon --namespace algon
+helm upgrade --install followd -n namespace mortega89/Followd --create-namespace
 ```
 
 ## Configuration
 
-The helm default values are a good starting point. [values.yaml](charts/algon/values.yaml)
+The helm default values are a good starting point. [values.yaml](MainChart/Followd/values.yaml)
 
 ## Usage
 

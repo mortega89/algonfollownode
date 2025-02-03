@@ -103,7 +103,7 @@ conduit:
       hostaddr: postgres1-postgresql
       existingSecret:
         name: postgres1-postgresql
-        namespace: stocaz
+        namespace: namespace
         passwordKey: password
       # namespace: namespace
       # secret: secret
@@ -115,7 +115,7 @@ conduit:
   
   # api-token secret, this get ignored if algonfollow is installed from this chart directly
   importer:
-    namespace: stocaz
+    namespace: namespace
     secret: algon-api-token
   ingress:
     annotations: {}
