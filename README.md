@@ -42,7 +42,7 @@ The node must be able to reach:
 ## Install
 
 ```sh
-helm repo add mortega89 https://mortega89.github.io/algonfollow
+helm repo add mortega89 https://mortega89.github.io/algonfollownode
 helm repo update
 helm upgrade --install followd -n namespace mortega89/Followd --create-namespace
 ```
