@@ -70,7 +70,6 @@ conduit:
 # chart will create configmap from his template file and by using specific 
 # algon nettaddr and postgres connection string
     UsingFollowdChart: true
-
     config:
       api:
         addr: :8981
