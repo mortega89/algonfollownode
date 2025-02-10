@@ -178,6 +178,16 @@ entries:
     version: 3.26.3
   algonfollow:
   - apiVersion: v2
+    appVersion: 4.0.1
+    created: "2025-02-10T15:10:22.346065076Z"
+    description: Stable channel Algorand node helm chart
+    digest: 8edfdaee536b7f7cbdc9559dc2142dc66d5f7ca3c197abbbb032597d633b5f3b
+    name: algonfollow
+    type: application
+    urls:
+    - https://github.com/mortega89/algonfollownode/releases/download/algonfollow-1.1.7/algonfollow-1.1.7.tgz
+    version: 1.1.7
+  - apiVersion: v2
     appVersion: 3.27.0
     created: "2025-01-23T10:25:49.429652167Z"
     description: Stable channel Algorand node helm chart
@@ -358,4 +368,4 @@ entries:
     urls:
     - https://github.com/mortega89/algonfollownode/releases/download/conduit-0.1.1/conduit-0.1.1.tgz
     version: 0.1.1
-generated: "2025-01-23T10:27:05.888281331Z"
+generated: "2025-02-10T15:10:22.346150326Z"
